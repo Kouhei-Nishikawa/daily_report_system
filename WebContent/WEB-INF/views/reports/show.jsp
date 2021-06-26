@@ -38,7 +38,7 @@
                         <tr>
                             <th>いいね数</th>
                             <td>
-                                <c:out value="${report.like_count}" />
+                                <a href="<c:url value='/like/like_show?id=${report.id}' />"><c:out value="${report.like_count}" /></a>
                             </td>
                         </tr>
                     </tbody>
@@ -47,8 +47,11 @@
                 <c:if test="${sessionScope.login_employee.id == report.employee.id}">
                     <p><a href="<c:url value="/reports/edit?id=${report.id}" />">この日報を編集する</a></p>
                 </c:if>
-                <c:if test="${sessionScope.login_employee.id != report.employee.id}">
+                <c:if test="${sessionScope.login_employee.id != report.employee.id && likes_count == 0}">
                     <p><a href="<c:url value="/reports/like_count?id=${report.id}" />">この日報にいいねする</a></p>
+                </c:if>
+                <c:if test="${sessionScope.login_employee.id != report.employee.id && follows_count == 0}">
+                    <p><a href="<c:url value="/follows/follow_count?id=${report.id}" />">この日報の従業員をフォローする</a></p>
                 </c:if>
             </c:when>
             <c:otherwise>
@@ -56,6 +59,6 @@
             </c:otherwise>
         </c:choose>
 
-        <p><a href="<c:url value="/reports/index" />">一覧に戻る</a></p>
+        <p><a href="<c:url value='/reports/index' />">一覧に戻る</a></p>
     </c:param>
 </c:import>

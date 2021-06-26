@@ -13,40 +13,31 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-@Table(name = "likes")
+@Table(name = "follows")
 @NamedQueries({
     @NamedQuery(
-        name = "getAllLikes",
-        query = "SELECT l FROM Like AS l WHERE l.report = :report ORDER BY l.id DESC"
+        name = "getAllFollows",
+        query = "SELECT f FROM Follow AS f ORDER BY f.id DESC"
     ),
     @NamedQuery(
-        name = "getLikesCount",
-        query = "SELECT COUNT(l) FROM Like AS l WHERE l.report = :report"
+        name = "getFollowsCount",
+        query = "SELECT COUNT(f) FROM Follow AS f"
     ),
     @NamedQuery(
-        name = "getMyAllLikes",
-        query = "SELECT l FROM Like AS l WHERE l.employee = :employee ORDER BY l.id DESC"
+        name = "getMyAllFollows",
+        query = "SELECT f FROM Follow AS f WHERE f.employee = :employee ORDER BY f.id DESC"
     ),
     @NamedQuery(
-        name = "getMyLikesCount",
-        query = "SELECT COUNT(l) FROM Like AS l WHERE l.employee = :employee AND l.report = :report"
-    )
+            name = "getMyFollowsCount",
+            query = "SELECT COUNT(f) FROM Follow AS f WHERE f.employee = :employee AND f.follow = :follow"
+        )
 })
-
 @Entity
-public class Like {
+public class Follow {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
-
-    @ManyToOne
-    @JoinColumn(name = "report_id", nullable = false)
-    private Report report;
 
     @Column(name = "created_at", nullable = false)
     private Timestamp created_at;
@@ -54,28 +45,22 @@ public class Like {
     @Column(name = "updated_at", nullable = false)
     private Timestamp updated_at;
 
+    @ManyToOne
+    @JoinColumn(name = "follow_id", nullable = false)
+    private Employee follow;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public Report getReport() {
-        return report;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
     }
 
     public Timestamp getCreated_at() {
@@ -94,4 +79,19 @@ public class Like {
         this.updated_at = updated_at;
     }
 
+    public Employee getFollow() {
+        return follow;
+    }
+
+    public void setFollow(Employee follow) {
+        this.follow = follow;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
 }

@@ -1,6 +1,7 @@
-package controllers.reports;
+package controllers.likes;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -10,53 +11,59 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import models.Employee;
+import models.Like;
 import models.Report;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class ReportsShowServlet
+ * Servlet implementation class LikesShowServlet
  */
-@WebServlet("/reports/show")
-public class ReportsShowServlet extends HttpServlet {
+@WebServlet("/like/like_show")
+public class LikesShowServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ReportsShowServlet() {
+    public LikesShowServlet() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         EntityManager em = DBUtil.createEntityManager();
 
-        Employee login_employee = (Employee)request.getSession().getAttribute("login_employee");
         Report r = em.find(Report.class, Integer.parseInt(request.getParameter("id")));
-        Employee f = r.getEmployee();
 
-        long likes_count =  (long)em.createNamedQuery("getMyLikesCount", Long.class)
-                .setParameter("employee", login_employee)
+        int page;
+        try{
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch(Exception e) {
+            page = 1;
+        }
+
+        List<Like> likes = em.createNamedQuery("getAllLikes", Like.class)
+                                  .setParameter("report", r)
+                                  .setFirstResult(10 * (page - 1))
+                                  .setMaxResults(10)
+                                  .getResultList();
+
+        long likes_count = (long)em.createNamedQuery("getLikesCount", Long.class)
                 .setParameter("report", r)
                 .getSingleResult();
 
-        long follows_count =  (long)em.createNamedQuery("getMyFollowsCount", Long.class)
-                .setParameter("employee", login_employee)
-                .setParameter("follow",f)
-                .getSingleResult();
-
-        em.close();
-
-        request.setAttribute("follows_count", follows_count);
+        request.setAttribute("likes", likes);
         request.setAttribute("likes_count", likes_count);
+        request.setAttribute("page", page);
         request.setAttribute("report", r);
-        request.setAttribute("_token", request.getSession().getId());
 
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/reports/show.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/like/like_show.jsp");
         rd.forward(request, response);
+
     }
 
 }
