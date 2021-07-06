@@ -42,6 +42,15 @@ a {
     color: #24738e;
 }
 
+a:visited {
+    text-decoration: none;
+    color: #660099;
+}
+
+a:hover {
+    text-decoration: underline;
+    }
+
 table, tr, th, td {
     border: 1px solid #cccccc;
 }

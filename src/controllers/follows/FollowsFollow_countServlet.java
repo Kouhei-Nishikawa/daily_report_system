@@ -39,7 +39,6 @@ public class FollowsFollow_countServlet extends HttpServlet {
         Report r = em.find(Report.class, Integer.parseInt(request.getParameter("id")));
         Follow f = new Follow();
 
-
         f.setEmployee((Employee)request.getSession().getAttribute("login_employee"));
         f.setFollow(r.getEmployee());
 

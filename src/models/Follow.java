@@ -20,7 +20,7 @@ import javax.persistence.Table;
         query = "SELECT f FROM Follow AS f ORDER BY f.id DESC"
     ),
     @NamedQuery(
-        name = "getFollowsCount",
+        name = "getAllFollowsCount",
         query = "SELECT COUNT(f) FROM Follow AS f"
     ),
     @NamedQuery(
@@ -28,9 +28,13 @@ import javax.persistence.Table;
         query = "SELECT f FROM Follow AS f WHERE f.employee = :employee ORDER BY f.id DESC"
     ),
     @NamedQuery(
-            name = "getMyFollowsCount",
-            query = "SELECT COUNT(f) FROM Follow AS f WHERE f.employee = :employee AND f.follow = :follow"
-        )
+        name = "getMyFollowsCount",
+        query = "SELECT COUNT(f) FROM Follow AS f WHERE f.employee = :employee AND f.follow = :follow"
+        ),
+    @NamedQuery(
+        name = "getFollowsCount",
+        query = "SELECT COUNT(f) FROM Follow AS f WHERE f.employee = :employee"
+                )
 })
 @Entity
 public class Follow {
@@ -52,8 +56,6 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
-
-
 
     public Integer getId() {
         return id;
